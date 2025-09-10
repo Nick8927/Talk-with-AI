@@ -1,15 +1,11 @@
 from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import CommandStart
-from aiogram.fsm.state import State, StatesGroup
+from states.creator import Creator
 from aiogram.fsm.context import FSMContext
 from settings_ai.settings import ask
 
 router = Router()
-
-
-class Creator(StatesGroup):
-    wait = State()
 
 
 @router.message(CommandStart())
