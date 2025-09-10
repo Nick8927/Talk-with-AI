@@ -1,24 +1,27 @@
 from openai import OpenAI
-from dotenv import load_dotenv
-from os import getenv
-
-
-load_dotenv()
-AI_TOKEN = getenv("AI_TOKENv3")
-
+from config import AI_TOKEN
+import asyncio
 
 client = OpenAI(
-  base_url="https://openrouter.ai/api/v1",
-  api_key=AI_TOKEN,
+    base_url="https://openrouter.ai/api/v1",
+    api_key=AI_TOKEN,
 )
 
-completion = client.chat.completions.create(
-  model="deepseek/deepseek-chat",
-  messages=[
-    {
-      "role": "user",
-      "content": "Как дела, мой друг?"
-    }
-  ]
-)
-print(completion.choices[0].message.content)
+
+async def ask(prompt: str):
+    """корутина для асинхронного запроса к OpenRouter"""
+    completion = await asyncio.to_thread(
+        client.chat.completions.create,
+        model="deepseek/deepseek-chat",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return completion.choices[0].message.content
+
+
+async def main_test():
+    response = await ask("Как дела, мой друг?")
+    print(response)
+
+
+if __name__ == "__main__":
+    asyncio.run(main_test())

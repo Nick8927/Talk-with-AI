@@ -7,4 +7,5 @@ router = Router()
 
 @router.message(CommandStart())
 async def start(message: Message):
+    """обработка команды /start"""
     await message.answer("Добро пожаловать, напишите ваш запрос.")
