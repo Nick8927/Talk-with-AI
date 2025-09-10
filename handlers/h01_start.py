@@ -1,5 +1,5 @@
 from aiogram import Router, F
-from aiogram.types import Message, ReplyKeyboardRemove
+from aiogram.types import Message, ReplyKeyboardRemove, FSInputFile
 from aiogram.filters import CommandStart
 
 from keyboards.reply import get_start_keyboard
@@ -13,10 +13,13 @@ router = Router()
 @router.message(CommandStart())
 async def start(message: Message):
     """обработка команды /start"""
-    await message.answer(
-        "Привет 👋\nЯ готов дать ответ на любой вопрос.\nНажми кнопку ниже",
+    photo = FSInputFile("media/banner.jpg")
+    await message.answer_photo(
+        photo=photo,
+        caption="Привет 👋\nЯ готов дать ответ на любой вопрос.\nНажми кнопку ниже:",
         reply_markup=get_start_keyboard()
     )
+
 
 @router.message(F.text == "I'm ready to talk 👁‍🗨")
 async def start_chat(message: Message):
@@ -25,6 +28,7 @@ async def start_chat(message: Message):
         "Я жду твоего вопроса,\nнапиши его скорее 👇",
         reply_markup=ReplyKeyboardRemove()
     )
+
 
 @router.message(Creator.wait)
 async def stop_flood(message: Message):
