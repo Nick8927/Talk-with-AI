@@ -10,11 +10,11 @@ logging.basicConfig(level=logging.INFO)
 async def main():
     """корутина запуска бота"""
     bot = Bot(token=TG_TOKEN)
-    dp = Dispatcher()
+    dp = Dispatcher(bot=bot)
 
     dp.include_router(router)
 
-    logging.info("Бот запущен...")
+    logging.info("Бот в работе...")
     await dp.start_polling(bot)
 
 
