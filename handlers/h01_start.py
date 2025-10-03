@@ -1,11 +1,14 @@
 from aiogram import Router, F
-from aiogram.types import Message, ReplyKeyboardRemove, FSInputFile
+from aiogram.types import Message, ReplyKeyboardRemove, FSInputFile, CallbackQuery
 from aiogram.filters import CommandStart
 
+from keyboards.inline import get_learning_menu
 from keyboards.reply import get_start_keyboard
 from states.creator import Creator
 from aiogram.fsm.context import FSMContext
 from settings_ai.settings import ask
+from data.lessons import daily_routine_words, irregular_verbs
+
 
 router = Router()
 
@@ -22,13 +25,24 @@ async def start(message: Message):
 
 
 @router.message(F.text == "I'm ready to talk 👁‍🗨")
-async def start_chat(message: Message):
-    """обработка кнопки при входе"""
+async def open_learning_menu(message: Message):
+    """открытие подменю"""
     await message.answer(
-        "Я жду твоего вопроса,\nнапиши его скорее 👇",
-        reply_markup=ReplyKeyboardRemove()
+        "Выбери, что хочешь изучать 👇",
+        reply_markup=get_learning_menu()
     )
 
+
+@router.callback_query(F.data == "learn_daily")
+async def learn_daily(callback: CallbackQuery):
+    await callback.message.answer(daily_routine_words, parse_mode="Markdown")
+    await callback.answer()
+
+
+@router.callback_query(F.data == "learn_irregular")
+async def learn_irregular(callback: CallbackQuery):
+    await callback.message.answer(irregular_verbs, parse_mode="Markdown")
+    await callback.answer()
 
 @router.message(Creator.wait)
 async def stop_flood(message: Message):
